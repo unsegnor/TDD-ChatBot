@@ -1,7 +1,7 @@
 {
-  "name": "new-app-template",
-  "version": "3.3.403",
-  "description": "New application schema",
+  "name": "tdd-chatbot",
+  "version": "0.1.0",
+  "description": "Web to make tests for a chatbot",
   "main": "index.js",
   "dockerHubUsername": "vcalatayud",
   "devDependencies": {
@@ -16,6 +16,7 @@
     "test": "npm run test-mocha && npm run test-cucumber && npm run test-api && npm run test-lambda",
     "test-mocha": "npm run test-doubles && npm run test-domain && npm run test-adapters && npm run test-integration && npm run test-mutation",
     "test-domain": "mocha domain --recursive",
+    "test-html": "mocha html-ui --recursive --timeout 30000",
     "test-doubles": "mocha test-doubles --recursive",
     "test-adapters": "mocha adapters --recursive",
     "test-integration": "mocha test-integration --recursive",
@@ -33,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unsegnor/new-app.git"
+    "url": "git+https://github.com/unsegnor/tdd-chatbot.git"
   },
   "keywords": [
     "New",
@@ -47,12 +48,14 @@
   "author": "Víctor Calatayud Asensio",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/unsegnor/new-app/issues"
+    "url": "https://github.com/unsegnor/tdd-chatbot/issues"
   },
-  "homepage": "https://github.com/unsegnor/new-app#readme",
+  "homepage": "https://github.com/unsegnor/tdd-chatbot#readme",
   "dependencies": {
     "aws-sdk": "^2.1363.0",
     "axios": "^1.3.5",
-    "express": "^4.18.2"
+    "express": "^4.21.0",
+    "get-port": "^5.1.1",
+    "html-e2e": "^1.14.209"
   }
 }

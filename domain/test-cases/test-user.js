@@ -13,10 +13,21 @@
 
 module.exports = function(user_interface){
     return Object.freeze({
-        sum
+        addTest,
+        runTests,
+        cleanUp
     })
 
-    async function sum(a, b){
-        return await user_interface.sum(a, b)
+    async function addTest({question, responseEvaluation}){
+        return await user_interface.addTest(question, responseEvaluation)
+    }
+
+    async function runTests(){
+        let testResults = await user_interface.runTests()
+        return testResults
+    }
+
+    async function cleanUp(){
+        await user_interface.close()
     }
 }
