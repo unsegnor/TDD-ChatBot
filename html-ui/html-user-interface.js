@@ -19,6 +19,7 @@ module.exports = async function(){
         runTests,
         setContext,
         getTestResponse,
+        getTest,
         close
     })
 
@@ -26,6 +27,8 @@ module.exports = async function(){
         await testUser.set("question", question)
         await testUser.set("response evaluation", responseEvaluation)
         await testUser.doAction("add test")
+        let testId = await testUser.get('latest test id') //TODO: improve testuser to return the last element of a list, the first element of a list...
+        return testId
     }
 
     async function runTests(){
@@ -48,6 +51,12 @@ module.exports = async function(){
         let response = await testUser.get('response')
         debugger
         return response
+    }
+
+    async function getTest(id){
+        let question = await testUser.get(`test${id} question`)
+        let responseEvaluation = await testUser.get(`test${id} response evaluation`)
+        return {question, responseEvaluation}
     }
 
     function delay(ms) {
