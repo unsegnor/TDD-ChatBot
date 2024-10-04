@@ -87,7 +87,8 @@
             const responseEvaluationQuestion = `Is the text "${response}" matching the criteria "${responseEvaluationInput.value}"? answer only "true" or "false"`;
             const evaluationResponse = await getChatCompletion(responseEvaluationQuestion);
 
-            resultInput.value = evaluationResponse.indexOf("true") != -1 ? "passed" : "failed";
+            const testPassed = evaluationResponse.indexOf("true") !== -1;
+            resultInput.value = testPassed ? "passed" : "failed";
         }
 
         addTestButton.addEventListener('click', addTest);
