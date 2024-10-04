@@ -108,5 +108,27 @@ module.exports = function(user_interface){
             expect(test1response).to.contain('name')
             expect(test2response).to.contain('age')
         });
+
+        it('review executed tests result', async () => {
+            let test1Id = await user.addTest({
+                question:"What is my name?",
+                responseEvaluation:"Response should indicate that the name is Juan."
+            })
+
+            let test2Id = await user.addTest({
+                question:"What is my age?",
+                responseEvaluation:"Response should indicate that the age is 22."
+            })
+
+            await user.setContext("The user lives in Salobreña. Their name is Juan.")
+
+            await user.runTests()
+
+            let test1Info = await user.getTest(test1Id)
+            let test2Info = await user.getTest(test2Id)
+
+            expect(test1Info.passed).to.be.true
+            expect(test2Info.passed).to.be.false
+        });
     })
 }

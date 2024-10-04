@@ -153,6 +153,8 @@
                 <input id="test${test.id}response-evaluation" type="text" value="${test.responseEvaluation}" readonly>
                 <label for="test${test.id}response">Test${test.id} Response</label>
                 <input id="test${test.id}response" type="text" value="" readonly>
+                <label for="test${test.id}result">Test${test.id} Result</label>
+                <input id="test${test.id}result" type="text" value="" readonly>
             `;
 
             testList.appendChild(testDiv);
@@ -164,17 +166,19 @@
         async function evaluateAllTests() {
             //TODO: run each of the tests and save the response
 
-            let response;
             for (let test of tests){
-                response = await getChatCompletion(test.question);
+                let response = await getChatCompletion(test.question);
                 document.getElementById(`test${test.id}response`).value = response;
+
+                const responseEvaluationQuestion = `Is the text "${response}" matching the criteria "${test.responseEvaluation}"? answer only "true" or "false"`;
+                const evaluationResponse = await getChatCompletion(responseEvaluationQuestion);
+
+                const testPassed = evaluationResponse.indexOf("true") !== -1;
+                document.getElementById(`test${test.id}result`).value = testPassed ? "passed" : "failed";
+                let passed = document.getElementById(`test${test.id}result`).value
+                resultInput.value = testPassed ? "passed" : "failed";
             }
 
-            const responseEvaluationQuestion = `Is the text "${response}" matching the criteria "${responseEvaluationInput.value}"? answer only "true" or "false"`;
-            const evaluationResponse = await getChatCompletion(responseEvaluationQuestion);
-
-            const testPassed = evaluationResponse.indexOf("true") !== -1;
-            resultInput.value = testPassed ? "passed" : "failed";
         }
 
         addTestButton.addEventListener('click', addTest);

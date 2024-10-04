@@ -55,7 +55,8 @@ module.exports = async function(){
     async function getTest(id){
         let question = await testUser.get(`test${id} question`)
         let responseEvaluation = await testUser.get(`test${id} response evaluation`)
-        return {question, responseEvaluation}
+        let result = await testUser.get(`test${id} result`)
+        return {question, responseEvaluation, passed: result == 'passed'}
     }
 
     function delay(ms) {
