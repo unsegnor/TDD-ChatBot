@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creador   
- de Tests para Chatbot</title>
-    </head>
+    <title>Creador de Tests para Chatbot</title>
+</head>
 <body>
     <h1>Creador de Tests</h1>
 
@@ -14,12 +13,8 @@
             <!-- Dynamic test entries will appear here -->
         </div>
     </div>
-    
-    <!-- Elementos para mostrar progreso -->
-    <!-- <progress></progress> https://html.spec.whatwg.org/multipage/form-elements.html#the-progress-element -->
 
     <input id="credentials" type="password" placeholder="credentials" />
-
     <input id="question" type="text" placeholder="question"/>
     <input id="response-evaluation" type="text" placeholder="response evaluation"/>
     <input id="response" type="text" placeholder="response" readonly/>
@@ -37,79 +32,66 @@
         const questionInput = document.getElementById('question');
         const responseEvaluationInput = document.getElementById('response-evaluation');
         const resultInput = document.getElementById('resultado');
-        const testContainer = document.getElementById('test-container');
-        const credentials = document.getElementById('credentials');
-        const context = document.getElementById('context');
-        const response_field = document.getElementById('response');
-        const latestId_field = document.getElementById('latest-id');
+        const credentialsInput = document.getElementById('credentials');
+        const contextInput = document.getElementById('context');
+        const responseField = document.getElementById('response');
+        const latestIdField = document.getElementById('latest-id');
         const testList = document.getElementById('test-list');
 
-        async function getChatCompletion(question){
+        // Function to call the OpenAI API and get a completion
+        async function getChatCompletion(question) {
             const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${credentials.value}`
-                        },
-                        body: JSON.stringify({
-                            model: 'gpt-4o-mini',
-                            messages: [
-                                {
-                                    role: "system",
-                                    content: [
-                                        {
-                                            type: "text",
-                                            text: context.value
-                                        }
-                                    ]
-                                },
-                                {
-                                    role: "user",
-                                    content: [
-                                        {
-                                            type: "text",
-                                            text: question
-                                        }
-                                    ]
-                                }
-                            ],
-                            n: 1,
-                            stop: null,
-                            temperature: 0.5
-                        })
-                    });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${credentialsInput.value}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: "system", content: contextInput.value },
+                        { role: "user", content: question }
+                    ],
+                    n: 1,
+                    stop: null,
+                    temperature: 0.5
+                })
+            });
 
-                    const data = await response.json();
-                    const generatedResponse = data.choices[0].message.content.trim();
-                    return generatedResponse
+            const data = await response.json();
+            return data.choices[0].message.content.trim();
         }
 
-        addTestButton.addEventListener('click', async function(){
-            latestId_field.value = Number(latestId_field.value) +1
+        // Function to add a new test to the test list
+        function addTest() {
+            const testId = Number(latestIdField.value) + 1;
+            latestIdField.value = testId;
 
-            const testId = latestId_field.value
             const testDiv = document.createElement('div');
-                testDiv.style.marginBottom = '10px';
+            testDiv.style.marginBottom = '10px';
+            testDiv.innerHTML = `
+                <label for="test${testId}question">Test${testId} Question</label>
+                <input id="test${testId}question" type="text" value="${questionInput.value}" readonly>
+                <label for="test${testId}response-evaluation">Test${testId} Response Evaluation</label>
+                <input id="test${testId}response-evaluation" type="text" value="${responseEvaluationInput.value}" readonly>
+            `;
 
-                testDiv.innerHTML = `
-                    <label for="test${testId}question">Test${testId} Question</label>
-                    <input id="test${testId}question" type="text" value="${questionInput.value}" readonly>
-                    <label for="test${testId}response-evaluation">Test${testId} Response Evaluation</label>
-                    <input id="test${testId}response-evaluation" type="text" value="${responseEvaluationInput.value}" readonly>
-                `;
+            testList.appendChild(testDiv);
+        }
 
-                testList.appendChild(testDiv);
-        })
+        // Function to evaluate the response of all tests
+        async function evaluateAllTests() {
+            const response = await getChatCompletion(questionInput.value);
+            responseField.value = response;
 
-        runAllButton.addEventListener('click', async () => {
-            const response = await getChatCompletion(questionInput.value)
-            response_field.value = response
-            const responseEvaluation = await getChatCompletion(`Is the text "${response}" matching the criteria "${responseEvaluationInput.value}"? answer only "true" or "false"`)
+            const responseEvaluationQuestion = `Is the text "${response}" matching the criteria "${responseEvaluationInput.value}"? answer only "true" or "false"`;
+            const evaluationResponse = await getChatCompletion(responseEvaluationQuestion);
 
-            let testPassed = responseEvaluation.indexOf("true") != -1
-            resultInput.value = testPassed ? "passed" : "failed";
-        });
+            resultInput.value = evaluationResponse.indexOf("true") != -1 ? "passed" : "failed";
+        }
+
+        addTestButton.addEventListener('click', addTest);
+        runAllButton.addEventListener('click', evaluateAllTests);
     </script>
-
-    </body>
+</body>
 </html>
