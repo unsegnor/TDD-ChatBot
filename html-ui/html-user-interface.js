@@ -1,3 +1,4 @@
+require('dotenv').config();
 const {TestUser} = require("html-e2e")
 const HtmlSolution = require('./htmlSolution.js')
 
@@ -8,7 +9,10 @@ module.exports = async function(){
 
     const solution = await runHtmlSolution()
     const testUser = await TestUser()
-    testUser.open(solution.url)
+
+    await testUser.open(solution.url)
+    await testUser.set('credentials', process.env.OPENAI_API_KEY)
+
 
     return Object.freeze({
         addTest,
@@ -24,6 +28,7 @@ module.exports = async function(){
 
     async function runTests(){
         await testUser.doAction('run all')
+        await delay(5000)
         let result = await testUser.get('result')
         return {passed: result == 'passed'}
     }
@@ -32,4 +37,8 @@ module.exports = async function(){
         await testUser.close()
         await solution.close()
     }
+
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
 }

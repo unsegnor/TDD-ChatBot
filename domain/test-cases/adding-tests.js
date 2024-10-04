@@ -21,17 +21,23 @@ module.exports = function(user_interface){
         })
 
         it('add test with response evaluation', async () => {
-            console.log('user', user)
             await user.addTest({
                 question:"What is the color of the sky during a sunny day?",
-                responseEvaluation:"Response should be blue."
+                responseEvaluation:"Response should indicate that the sky is generally blue."
             })
             var testRunResults = await user.runTests()
             
             expect(testRunResults.passed).to.equal(true);
         });
 
-
-        it('sum property based'); //https://github.com/dubzzz/fast-check/blob/main/packages/fast-check/documentation/Arbitraries.md#combinators
+        it('add failing test with response evaluation', async () => {
+            await user.addTest({
+                question:"What is the color of the sky during a sunny day?",
+                responseEvaluation:"Response should indicate that the sky is generally red."
+            })
+            var testRunResults = await user.runTests()
+            
+            expect(testRunResults.passed).to.equal(false);
+        });
     })
 }
