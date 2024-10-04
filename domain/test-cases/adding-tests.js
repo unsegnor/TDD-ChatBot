@@ -39,5 +39,31 @@ module.exports = function(user_interface){
             
             expect(testRunResults.passed).to.equal(false);
         });
+
+        it('user can see the generated response', async () => {
+            await user.addTest({
+                question:"What is the color of the sky during a sunny day?",
+                responseEvaluation:"Response should indicate that the sky is generally red."
+            })
+
+            await user.runTests()
+            var testResponse = await user.getTestResponse()
+
+            expect(testResponse).to.contain("blue")
+
+        });
+
+        it('making test to pass with prompt', async () => {
+            await user.addTest({
+                question:"What is the color of the sky during a sunny day?",
+                responseEvaluation:"Response should indicate that the sky is generally red."
+            })
+
+            await user.setContext("We are in a planet where the sun is red. If anyone asks you about the color of the sky you should say that is is generally red.")
+
+            var testRunResults = await user.runTests()
+
+            expect(testRunResults.passed).to.equal(true);
+        });
     })
 }

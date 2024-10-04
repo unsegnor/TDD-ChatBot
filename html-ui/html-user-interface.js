@@ -17,6 +17,8 @@ module.exports = async function(){
     return Object.freeze({
         addTest,
         runTests,
+        setContext,
+        getTestResponse,
         close
     })
 
@@ -28,7 +30,7 @@ module.exports = async function(){
 
     async function runTests(){
         await testUser.doAction('run all')
-        await delay(5000)
+        await delay(5000) //TODO: improve the testUser so that it waits for progress to finish looking for visible <progress> tags
         let result = await testUser.get('result')
         return {passed: result == 'passed'}
     }
@@ -38,7 +40,17 @@ module.exports = async function(){
         await solution.close()
     }
 
+    async function setContext(context){
+        await testUser.set('context', context)
+    }
+
+    async function getTestResponse(){
+        let response = await testUser.get('response')
+        debugger
+        return response
+    }
+
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
-      }
+    }
 }

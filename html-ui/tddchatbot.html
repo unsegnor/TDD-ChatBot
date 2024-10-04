@@ -19,10 +19,12 @@
 
     <input id="question" type="text" placeholder="question"/>
     <input id="response-evaluation" type="text" placeholder="response evaluation"/>
+    <input id="response" type="text" placeholder="response" readonly/>
     <button id="add-question">Add test</button>
     <button id="run-all">Run all</button>
     <label for="resultado">Result:</label>
     <input type="text" id="resultado" readonly value="passed">
+    <input type="text" id="context" placeholder="context"/>
 
     <script>
         const addQuestionButton = document.getElementById('add-question');
@@ -32,6 +34,9 @@
         const resultInput = document.getElementById('resultado');
         const testContainer = document.getElementById('test-container');
         const credentials = document.getElementById('credentials');
+        const context = document.getElementById('context');
+        const response_field = document.getElementById('response');
+
 
 
         async function getChatCompletion(question){
@@ -45,13 +50,22 @@
                             model: 'gpt-4o-mini',
                             messages: [
                                 {
+                                    role: "system",
+                                    content: [
+                                        {
+                                            type: "text",
+                                            text: context.value
+                                        }
+                                    ]
+                                },
+                                {
                                     role: "user",
                                     content: [
-                                    {
-                                        type: "text",
-                                        text: question
-                                    }
-                                ]
+                                        {
+                                            type: "text",
+                                            text: question
+                                        }
+                                    ]
                                 }
                             ],
                             n: 1,
@@ -67,6 +81,7 @@
 
         runAllButton.addEventListener('click', async () => {
             const response = await getChatCompletion(questionInput.value)
+            response_field.value = response
             const responseEvaluation = await getChatCompletion(`Is the text "${response}" matching the criteria "${responseEvaluationInput.value}"? answer only "true" or "false"`)
 
             let testPassed = responseEvaluation.indexOf("true") != -1

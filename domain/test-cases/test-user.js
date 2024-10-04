@@ -15,6 +15,8 @@ module.exports = function(user_interface){
     return Object.freeze({
         addTest,
         runTests,
+        setContext,
+        getTestResponse,
         cleanUp
     })
 
@@ -29,5 +31,13 @@ module.exports = function(user_interface){
 
     async function cleanUp(){
         await user_interface.close()
+    }
+
+    async function setContext(context){
+        await user_interface.setContext(context)
+    }
+
+    async function getTestResponse(){
+        return await user_interface.getTestResponse()
     }
 }
