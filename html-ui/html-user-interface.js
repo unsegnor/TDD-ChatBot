@@ -33,7 +33,7 @@ module.exports = async function(){
 
     async function runTests(){
         await testUser.doAction('run all')
-        await delay(5000) //TODO: improve the testUser so that it waits for progress to finish looking for visible <progress> tags
+        await delay(10000) //TODO: improve the testUser so that it waits for progress to finish looking for visible <progress> tags
         let result = await testUser.get('result')
         return {passed: result == 'passed'}
     }

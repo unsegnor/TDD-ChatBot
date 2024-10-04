@@ -106,6 +106,8 @@
         const latestIdField = document.getElementById('latest-id');
         const testList = document.getElementById('test-list');
 
+        let tests = []
+
         // Function to call the OpenAI API and get a completion
         async function getChatCompletion(question) {
             const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -122,7 +124,7 @@
                     ],
                     n: 1,
                     stop: null,
-                    temperature: 0.5
+                    temperature: 0
                 })
             });
 
@@ -133,26 +135,40 @@
         // Function to add a new test to the test list
         function addTest() {
             const testId = Number(latestIdField.value) + 1;
+
+            let test = {
+                id: testId, 
+                question: questionInput.value,
+                responseEvaluation: responseEvaluationInput.value
+            }
+
             latestIdField.value = testId;
 
             const testDiv = document.createElement('div');
             testDiv.style.marginBottom = '10px';
             testDiv.innerHTML = `
-                <label for="test${testId}question">Test${testId} Question</label>
-                <input id="test${testId}question" type="text" value="${questionInput.value}" readonly>
-                <label for="test${testId}response-evaluation">Test${testId} Response Evaluation</label>
-                <input id="test${testId}response-evaluation" type="text" value="${responseEvaluationInput.value}" readonly>
-                <label for="test${testId}response">Test${testId} Response</label>
-                <input id="test${testId}response" type="text" value="" readonly>
+                <label for="test${test.id}question">Test${test.id} Question</label>
+                <input id="test${test.id}question" type="text" value="${test.question}" readonly>
+                <label for="test${test.id}response-evaluation">Test${test.id} Response Evaluation</label>
+                <input id="test${test.id}response-evaluation" type="text" value="${test.responseEvaluation}" readonly>
+                <label for="test${test.id}response">Test${test.id} Response</label>
+                <input id="test${test.id}response" type="text" value="" readonly>
             `;
 
             testList.appendChild(testDiv);
+
+            tests.push(test)
         }
 
         // Function to evaluate the response of all tests
         async function evaluateAllTests() {
-            const response = await getChatCompletion(questionInput.value);
-            document.getElementById('test1response').value = response;
+            //TODO: run each of the tests and save the response
+
+            let response;
+            for (let test of tests){
+                response = await getChatCompletion(test.question);
+                document.getElementById(`test${test.id}response`).value = response;
+            }
 
             const responseEvaluationQuestion = `Is the text "${response}" matching the criteria "${responseEvaluationInput.value}"? answer only "true" or "false"`;
             const evaluationResponse = await getChatCompletion(responseEvaluationQuestion);

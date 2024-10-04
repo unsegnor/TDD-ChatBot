@@ -87,7 +87,7 @@ module.exports = function(user_interface){
             expect(test2Info.responseEvaluation).to.equal("Response should indicate that they don't know the age.")
         });
 
-        it.only('reviewing executed tests', async () => {
+        it('reviewing executed tests', async () => {
             let test1Id = await user.addTest({
                 question:"What is my name?",
                 responseEvaluation:"Response should indicate that they don't know the name."
@@ -106,7 +106,6 @@ module.exports = function(user_interface){
             let test2response = await user.getTestResponseFor(test2Id)
 
             expect(test1response).to.contain('name')
-            console.log(test2response)
             expect(test2response).to.contain('age')
         });
     })
