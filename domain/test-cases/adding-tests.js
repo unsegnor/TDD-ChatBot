@@ -41,13 +41,13 @@ module.exports = function(user_interface){
         });
 
         it('user can see the generated response', async () => {
-            await user.addTest({
+            let testId = await user.addTest({
                 question:"What is the color of the sky during a sunny day?",
                 responseEvaluation:"Response should indicate that the sky is generally red."
             })
 
             await user.runTests()
-            var testResponse = await user.getTestResponse()
+            var testResponse = await user.getTestResponseFor(testId)
 
             expect(testResponse).to.contain("blue")
 
@@ -77,8 +77,6 @@ module.exports = function(user_interface){
                 responseEvaluation:"Response should indicate that they don't know the age."
             })
 
-            //await user.setContext("The user lives in Salobreña.")
-
             let test1Info = await user.getTest(test1Id)
             let test2Info = await user.getTest(test2Id)
 
@@ -87,6 +85,29 @@ module.exports = function(user_interface){
 
             expect(test2Info.question).to.equal("What is my age?")
             expect(test2Info.responseEvaluation).to.equal("Response should indicate that they don't know the age.")
+        });
+
+        it.only('reviewing executed tests', async () => {
+            let test1Id = await user.addTest({
+                question:"What is my name?",
+                responseEvaluation:"Response should indicate that they don't know the name."
+            })
+
+            let test2Id = await user.addTest({
+                question:"What is my age?",
+                responseEvaluation:"Response should indicate that they don't know the age."
+            })
+
+            await user.setContext("The user lives in Salobreña.")
+
+            await user.runTests()
+
+            let test1response = await user.getTestResponseFor(test1Id)
+            let test2response = await user.getTestResponseFor(test2Id)
+
+            expect(test1response).to.contain('name')
+            console.log(test2response)
+            expect(test2response).to.contain('age')
         });
     })
 }

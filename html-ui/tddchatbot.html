@@ -82,7 +82,6 @@
     
     <input id="question" type="text" placeholder="question"/>
     <input id="response-evaluation" type="text" placeholder="response evaluation"/>
-    <input id="response" type="text" placeholder="response" readonly/>
     <button id="add-test">Add test</button>
     <button id="run-all">Run all</button>
     <label for="resultado">Result:</label>
@@ -96,6 +95,7 @@
     <input type="text" id="context" placeholder="context"/>
 
     <script>
+
         const addTestButton = document.getElementById('add-test');
         const runAllButton = document.getElementById('run-all');
         const questionInput = document.getElementById('question');
@@ -103,7 +103,6 @@
         const resultInput = document.getElementById('resultado');
         const credentialsInput = document.getElementById('credentials');
         const contextInput = document.getElementById('context');
-        const responseField = document.getElementById('response');
         const latestIdField = document.getElementById('latest-id');
         const testList = document.getElementById('test-list');
 
@@ -143,6 +142,8 @@
                 <input id="test${testId}question" type="text" value="${questionInput.value}" readonly>
                 <label for="test${testId}response-evaluation">Test${testId} Response Evaluation</label>
                 <input id="test${testId}response-evaluation" type="text" value="${responseEvaluationInput.value}" readonly>
+                <label for="test${testId}response">Test${testId} Response</label>
+                <input id="test${testId}response" type="text" value="" readonly>
             `;
 
             testList.appendChild(testDiv);
@@ -151,7 +152,7 @@
         // Function to evaluate the response of all tests
         async function evaluateAllTests() {
             const response = await getChatCompletion(questionInput.value);
-            responseField.value = response;
+            document.getElementById('test1response').value = response;
 
             const responseEvaluationQuestion = `Is the text "${response}" matching the criteria "${responseEvaluationInput.value}"? answer only "true" or "false"`;
             const evaluationResponse = await getChatCompletion(responseEvaluationQuestion);

@@ -18,7 +18,7 @@ module.exports = async function(){
         addTest,
         runTests,
         setContext,
-        getTestResponse,
+        getTestResponseFor,
         getTest,
         close
     })
@@ -47,9 +47,8 @@ module.exports = async function(){
         await testUser.set('context', context)
     }
 
-    async function getTestResponse(){
-        let response = await testUser.get('response')
-        debugger
+    async function getTestResponseFor(testId){
+        let response = await testUser.get(`test${testId} response`)
         return response
     }
 

@@ -16,7 +16,7 @@ module.exports = function(user_interface){
         addTest,
         runTests,
         setContext,
-        getTestResponse,
+        getTestResponseFor,
         getTest,
         cleanUp
     })
@@ -38,8 +38,8 @@ module.exports = function(user_interface){
         await user_interface.setContext(context)
     }
 
-    async function getTestResponse(){
-        return await user_interface.getTestResponse()
+    async function getTestResponseFor(testId){
+        return await user_interface.getTestResponseFor(testId)
     }
 
     async function getTest(id){
