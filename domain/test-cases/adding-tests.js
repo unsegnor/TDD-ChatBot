@@ -130,5 +130,13 @@ module.exports = function(user_interface){
             expect(test1Info.passed).to.be.true
             expect(test2Info.passed).to.be.false
         });
+
+        //TODO: add variables like the time of the day, so that we can set them in the GIVEN, which is another context specific for the test
+        //TODO: allow setting a given as part of the conversation so that the question comes after several other questions
+        //TODO: allow generating questions from a criteria
+        //TODO: allow simulating full conversations between a fake agent with some context and our agent with the result prompt, setting the ultimate goal, the expected result of the full conversation like retrieving specific data that we know the fake user has because we added it to the context
+        //TODO: ser capaz de coger una conversación real y modificar el prompt del agente hasta que es capaz de reproducir la conversación, su parte de la conversación, o algo parecido
+        //también se puede hacer para sacar un fake user, un agente capaz de comportarse como un usuario típico
+        //o sacar clusters de usuarios, esto es machine learning
     })
 }

@@ -8,7 +8,7 @@ module.exports = async function(){
     }
 
     const solution = await runHtmlSolution()
-    const testUser = await TestUser()
+    const testUser = await TestUser({showBrowser: true})
 
     await testUser.open(solution.url)
     await testUser.set('credentials', process.env.OPENAI_API_KEY)
