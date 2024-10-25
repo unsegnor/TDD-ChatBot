@@ -33,7 +33,6 @@ module.exports = async function(){
 
     async function runTests(){
         await testUser.doAction('run all')
-        await delay(10000) //TODO: improve the testUser so that it waits for progress to finish looking for visible <progress> tags
         let result = await testUser.get('result')
         return {passed: result == 'passed'}
     }
@@ -57,9 +56,5 @@ module.exports = async function(){
         let responseEvaluation = await testUser.get(`test${id} response evaluation`)
         let result = await testUser.get(`test${id} result`)
         return {question, responseEvaluation, passed: result == 'passed'}
-    }
-
-    function delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }

@@ -162,9 +162,24 @@
             tests.push(test)
         }
 
+        function startProgress() {
+            const progress = document.createElement('progress');
+            progress.id = 'running-progress';
+            document.body.appendChild(progress);
+        }
+
+        function finishProgress() {
+            const progress = document.getElementById('running-progress');
+            if (progress) {
+                progress.parentNode.removeChild(progress);
+            }
+        }
+
         // Function to evaluate the response of all tests
         async function evaluateAllTests() {
             //TODO: run each of the tests and save the response
+
+            startProgress()
 
             for (let test of tests){
                 let response = await getChatCompletion(test.question);
@@ -178,6 +193,8 @@
                 let passed = document.getElementById(`test${test.id}result`).value
                 resultInput.value = testPassed ? "passed" : "failed";
             }
+
+            finishProgress()
 
         }
 
