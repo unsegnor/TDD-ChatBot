@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDD Context creator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        #test-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        #test-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .test-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .test-item label {
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        input[readonly] {
+            background-color: #eee;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 3px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        button:hover {
+            background-color: #3e8e41;  
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Creador de Tests</h1>
+    <input id="credentials" type="password" placeholder="credentials" />
+
+    <div id="test-container">
+        <div id="test-list" style="margin-bottom: 20px;">
+            <!-- Dynamic test entries will appear here -->
+        </div>
+    </div>
+
+    
+    <input id="question" type="text" placeholder="question"/>
+    <input id="response-evaluation" type="text" placeholder="response evaluation"/>
+    <button id="add-test">Add test</button>
+    <button id="run-all">Run all</button>
+    <label for="resultado">Result:</label>
+    <input type="text" id="resultado" readonly value="passed">
+    
+    <label for="latest-id">Latest test id</label>
+    <input type="text" id="latest-id" readonly value="0">
+
+
+    <!-- TODO: Improve html e2e to allow looking for text in textarea elements -->
+    <textarea id="context" placeholder="context"></textarea>
+
+    <script>
+
+        const addTestButton = document.getElementById('add-test');
+        const runAllButton = document.getElementById('run-all');
+        const questionInput = document.getElementById('question');
+        const responseEvaluationInput = document.getElementById('response-evaluation');
+        const resultInput = document.getElementById('resultado');
+        const credentialsInput = document.getElementById('credentials');
+        const contextInput = document.getElementById('context');
+        const latestIdField = document.getElementById('latest-id');
+        const testList = document.getElementById('test-list');
+
+        let tests = []
+
+        // Function to call the OpenAI API and get a completion
+        async function getChatCompletion(question) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${credentialsInput.value}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: "system", content: contextInput.value },
+                        { role: "user", content: question }
+                    ],
+                    n: 1,
+                    stop: null,
+                    temperature: 0
+                })
+            });
+
+            const data = await response.json();
+            return data.choices[0].message.content.trim();
+        }
+
+        // Function to add a new test to the test list
+        function addTest() {
+            const testId = Number(latestIdField.value) + 1;
+
+            let test = {
+                id: testId, 
+                question: questionInput.value,
+                responseEvaluation: responseEvaluationInput.value
+            }
+
+            latestIdField.value = testId;
+
+            const testDiv = document.createElement('div');
+            testDiv.style.marginBottom = '10px';
+            testDiv.innerHTML = `
+                <label for="test${test.id}question">Test${test.id} Question</label>
+                <input id="test${test.id}question" type="text" value="${test.question}" readonly>
+                <label for="test${test.id}response-evaluation">Test${test.id} Response Evaluation</label>
+                <input id="test${test.id}response-evaluation" type="text" value="${test.responseEvaluation}" readonly>
+                <label for="test${test.id}response">Test${test.id} Response</label>
+                <input id="test${test.id}response" type="text" value="" readonly>
+                <label for="test${test.id}result">Test${test.id} Result</label>
+                <input id="test${test.id}result" type="text" value="" readonly>
+            `;
+
+            testList.appendChild(testDiv);
+
+            tests.push(test)
+        }
+
+        function startProgress() {
+            const progress = document.createElement('progress');
+            progress.id = 'running-progress';
+            document.body.appendChild(progress);
+        }
+
+        function finishProgress() {
+            const progress = document.getElementById('running-progress');
+            if (progress) {
+                progress.parentNode.removeChild(progress);
+            }
+        }
+
+        // Function to evaluate the response of all tests
+        async function evaluateAllTests() {
+            //TODO: run each of the tests and save the response
+
+            startProgress()
+
+            for (let test of tests){
+                let response = await getChatCompletion(test.question);
+                document.getElementById(`test${test.id}response`).value = response;
+
+                const responseEvaluationQuestion = `Is the text "${response}" matching the criteria "${test.responseEvaluation}"? answer only "true" or "false"`;
+                const evaluationResponse = await getChatCompletion(responseEvaluationQuestion);
+
+                const testPassed = evaluationResponse.indexOf("true") !== -1;
+                document.getElementById(`test${test.id}result`).value = testPassed ? "passed" : "failed";
+                let passed = document.getElementById(`test${test.id}result`).value
+                resultInput.value = testPassed ? "passed" : "failed";
+            }
+
+            finishProgress()
+
+        }
+
+        addTestButton.addEventListener('click', addTest);
+        runAllButton.addEventListener('click', evaluateAllTests);
+    </script>
+</body>
+</html>

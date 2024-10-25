@@ -1,5 +1,5 @@
 module.exports = function(user_interface){
-    describe('Domain tests', function(){
-        require('./sum.js')(user_interface)
+    describe('All tests', function(){
+        require('./adding-tests.js')(user_interface)
     })
 }
