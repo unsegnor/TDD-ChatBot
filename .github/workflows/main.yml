@@ -42,6 +42,8 @@ jobs:
       #Run tests
       - run: npm ci
       - run: npm test
+        env:
+            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       #Increase version in main branch
       - name: "Automated Version Bump"
