@@ -54,19 +54,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       #Publish to npm in main branch
-      - run: npm publish
-        if: github.ref == 'refs/heads/master'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - run: npm publish
+      #   if: github.ref == 'refs/heads/master'
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Login to Docker Hub
-        if: github.ref == 'refs/heads/master'
-        run: |
-          DOCKERHUB_USERNAME=$(node -p "require('./package.json').dockerHubUsername")
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+      # - name: Login to Docker Hub
+      #   if: github.ref == 'refs/heads/master'
+      #   run: |
+      #     DOCKERHUB_USERNAME=$(node -p "require('./package.json').dockerHubUsername")
+      #     echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           
-      - name: Build and push Docker images
-        if: github.ref == 'refs/heads/master'
-        run: |
-          ./publish-on-docker-hub.sh "http-api"
-          ./publish-on-docker-hub.sh "lambda-function"
+      # - name: Build and push Docker images
+      #   if: github.ref == 'refs/heads/master'
+      #   run: |
+      #     ./publish-on-docker-hub.sh "http-api"
+      #     ./publish-on-docker-hub.sh "lambda-function"
