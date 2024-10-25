@@ -138,5 +138,8 @@ module.exports = function(user_interface){
         //TODO: ser capaz de coger una conversación real y modificar el prompt del agente hasta que es capaz de reproducir la conversación, su parte de la conversación, o algo parecido
         //también se puede hacer para sacar un fake user, un agente capaz de comportarse como un usuario típico
         //o sacar clusters de usuarios, esto es machine learning
+
+
+        //TODO: just missing persistence and ability to remove tests to be ready for version 1
     })
 }
