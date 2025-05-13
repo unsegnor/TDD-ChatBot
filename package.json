@@ -1,6 +1,6 @@
 {
   "name": "tdd-chatbot",
-  "version": "0.1.80",
+  "version": "0.1.81",
   "description": "Web to make tests for a chatbot",
   "main": "index.js",
   "dockerHubUsername": "vcalatayud",
