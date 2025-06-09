@@ -10,7 +10,7 @@
     "@stryker-mutator/mocha-runner": "9.0.1",
     "chai": "5.2.0",
     "dotenv": "^16.4.5",
-    "mocha": "11.5.0",
+    "mocha": "11.6.0",
     "uuid": "^11.0.0"
   },
   "scripts": {
