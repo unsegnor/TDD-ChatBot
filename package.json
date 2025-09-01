@@ -6,8 +6,8 @@
   "dockerHubUsername": "vcalatayud",
   "devDependencies": {
     "@cucumber/cucumber": "^12.0.0",
-    "@stryker-mutator/core": "9.0.1",
-    "@stryker-mutator/mocha-runner": "9.0.1",
+    "@stryker-mutator/core": "9.1.1",
+    "@stryker-mutator/mocha-runner": "9.1.1",
     "chai": "6.0.1",
     "dotenv": "^17.0.0",
     "mocha": "11.7.2",
