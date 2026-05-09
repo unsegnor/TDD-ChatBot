@@ -11,7 +11,7 @@
     "chai": "6.2.2",
     "dotenv": "^17.0.0",
     "mocha": "11.7.5",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   },
   "scripts": {
     "test": "npm run test-html",
